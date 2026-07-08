@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ApiarIA · 1200 agentes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<style>
+:root{--negro:#0A0A0B;--panel:#121214;--panel2:#1A1A1E;--panel3:#222228;--borde:#2A2A30;--rojo:#E11D2E;--rojo2:#FF4757;--rojodim:rgba(225,29,46,.12);--texto:#EDEDEF;--texto2:#8B8B93;--verde:#2ED573;--fd:'Bebas Neue';--fb:'Barlow';--fm:'JetBrains Mono';--r:12px}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:var(--fb),sans-serif;background:var(--negro);color:var(--texto);height:100vh;display:flex;overflow:hidden}
+svg.ic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--borde);border-radius:4px}button{font-family:var(--fb),sans-serif}
+.sb{width:270px;min-width:270px;background:var(--panel);border-right:1px solid var(--borde);display:flex;flex-direction:column;padding:16px 13px;gap:11px;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:11px}
+.logo .mk{width:38px;height:38px;border:2px solid var(--rojo);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--rojo)}
+.logo h1{font-family:var(--fd);font-size:22px;letter-spacing:2px;line-height:1}.logo h1 span{color:var(--rojo)}
+.logo small{font-size:9px;letter-spacing:2px;color:var(--texto2);text-transform:uppercase}
+.btn-r{background:var(--rojo);color:#fff;border:none;border-radius:var(--r);padding:10px;font-weight:600;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}.btn-r:hover{background:var(--rojo2)}
+.btn-g{background:transparent;border:1px solid var(--borde);color:var(--texto2);border-radius:10px;padding:9px;font-size:12.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px}.btn-g:hover{border-color:var(--rojo);color:var(--rojo)}
+.sec{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--texto2);margin-top:4px;display:flex;justify-content:space-between;align-items:center}
+.sec button{background:none;border:none;color:var(--rojo);cursor:pointer;font-size:15px}
+.sec b{color:var(--rojo);font-family:var(--fm);font-size:11px}
+.ctrl{background:var(--panel2);border:1px solid var(--borde);border-radius:var(--r);padding:11px}
+.ctrl label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--texto2);display:block;margin-bottom:7px}
+.ctrl select{width:100%;background:var(--panel3);border:1px solid var(--borde);color:var(--texto);border-radius:8px;padding:8px;font-size:12.5px;outline:none;cursor:pointer}
+.ctrl .nota{font-size:10.5px;color:var(--texto2);margin-top:7px;line-height:1.5}.ctrl .nota b{color:var(--texto)}
+.dom-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:9px;font-size:12.5px;color:var(--texto2);border:1px solid transparent;transition:all .25s}
+.dom-item .cnt{margin-left:auto;font-family:var(--fm);font-size:10.5px}
+.dom-item.on{color:var(--texto);background:var(--rojodim);border-color:var(--rojo)}.dom-item.on svg,.dom-item.on .cnt{color:var(--rojo)}
+.item{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:9px;font-size:12.5px;color:var(--texto2);cursor:pointer;border:1px solid transparent}
+.item:hover{background:var(--panel2);color:var(--texto)}
+.item .x{margin-left:auto;font-size:14px;color:var(--texto2)}.item .x:hover{color:var(--rojo)}
+.toggle{width:30px;height:16px;background:var(--panel3);border:1px solid var(--borde);border-radius:9px;position:relative;cursor:pointer;flex-shrink:0}
+.toggle i{position:absolute;top:1.5px;left:2px;width:11px;height:11px;background:var(--texto2);border-radius:50%;transition:all .2s}
+.toggle.on{background:var(--rojo);border-color:var(--rojo)}.toggle.on i{left:15px;background:#fff}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--panel3);border:1px solid var(--borde);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--texto2);margin:2px}
+.chip .x{cursor:pointer}
+.sbf{margin-top:auto;display:flex;flex-direction:column;gap:7px}
+.estado{font-size:10.5px;text-align:center;color:var(--texto2)}.estado.ok{color:var(--verde)}
+.centro{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+.tab-floats{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:5}
+.tab-float{background:rgba(26,26,30,.88);backdrop-filter:blur(10px);border:1px solid var(--borde);color:var(--texto2);font-size:11.5px;font-weight:600;padding:7px 12px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .25s cubic-bezier(.16,1,.3,1)}
+.tab-float:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(225,29,46,.18)}
+.tab-float:hover{border-color:var(--rojo);color:var(--rojo)}
+.tab-float.activo{background:var(--rojodim);border-color:var(--rojo);color:var(--rojo)}
+.tab-float svg{width:14px;height:14px}
+.tab-float .pv{width:7px;height:7px;border-radius:50%;background:var(--verde);box-shadow:0 0 6px var(--verde)}
+.tab-float .pv.on{background:var(--rojo);box-shadow:0 0 8px var(--rojo);animation:pul 1s infinite}
+.feed{flex:1;overflow-y:auto;padding:22px 0}
+.feed-in{max-width:680px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:13px}
+.bienv{text-align:center;margin-top:6vh}
+.bienv .mkg{width:66px;height:66px;border:3px solid var(--rojo);border-radius:16px;display:inline-flex;align-items:center;justify-content:center;color:var(--rojo);margin-bottom:12px}
+.bienv h2{font-family:var(--fd);font-size:36px;letter-spacing:3px}.bienv h2 span{color:var(--rojo)}
+.bienv p{color:var(--texto2);font-size:13.5px;max-width:520px;margin:8px auto 18px;line-height:1.6}
+.ejs{display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:580px;margin:0 auto}
+.ej{background:var(--panel);border:1px solid var(--borde);border-radius:var(--r);padding:12px;font-size:12px;color:var(--texto2);cursor:pointer;text-align:left;display:flex;gap:9px}
+.ej:hover{border-color:var(--rojo);color:var(--texto)}.ej svg{color:var(--rojo);margin-top:1px}
+.msg{display:flex;gap:11px;animation:ap .3s ease}@keyframes ap{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+.msg .av{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700}
+.msg.user .av{background:var(--panel3)}.msg.sys .av{background:var(--rojo);color:#fff}
+.msg .ct{flex:1;min-width:0;line-height:1.6;font-size:13.5px;padding-top:4px}
+.msg .ct h2{font-size:15px;margin:10px 0 6px;color:var(--rojo2)}.msg .ct h3{font-size:13.5px;margin:10px 0 5px}
+.msg .ct p{margin:6px 0}.msg .ct ul,.msg .ct ol{margin:6px 0 6px 22px}
+.msg .ct table{border-collapse:collapse;margin:10px 0;font-size:12px;width:100%}
+.msg .ct th,.msg .ct td{border:1px solid var(--borde);padding:6px 9px;text-align:left}
+.msg .ct th{background:var(--panel3);color:var(--rojo2)}
+.msg .ct code{font-family:var(--fm);font-size:12px;background:var(--panel3);padding:1px 5px;border-radius:4px}
+.msg .ct pre{background:#0E0E10;border:1px solid var(--borde);border-radius:10px;padding:13px;overflow-x:auto;margin:8px 0;position:relative}
+.msg .ct pre code{background:none;padding:0;font-size:12px;line-height:1.55}
+.btn-cp{position:absolute;top:7px;right:7px;background:var(--panel3);border:1px solid var(--borde);color:var(--texto2);font-size:10px;padding:3px 9px;border-radius:5px;cursor:pointer}
+.proceso-mini{background:var(--panel);border:1px solid var(--borde);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--texto2);display:flex;align-items:center;gap:10px}
+.proceso-mini .sp{width:11px;height:11px;border:2px solid var(--borde);border-top-color:var(--rojo);border-radius:50%;animation:gr .7s linear infinite}
+@keyframes gr{to{transform:rotate(360deg)}}@keyframes pul{50%{opacity:.45}}
+.razon-box{background:var(--panel2);border:1px solid var(--borde);border-radius:10px;margin-top:8px;overflow:hidden}
+.razon-trigger{width:100%;background:transparent;border:none;color:var(--texto2);text-align:left;padding:10px 14px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600}
+.razon-trigger:hover{background:var(--panel3);color:var(--texto)}
+.razon-trigger .meta{margin-left:auto;font-size:10.5px;color:var(--texto2);font-family:var(--fm);font-weight:400}
+.razon-contenido{display:none;padding:0 14px 12px;border-top:1px solid var(--borde)}
+.razon-contenido.abierto{display:block}
+.razon-burbuja{background:var(--panel3);border-left:2px solid var(--rojo);border-radius:8px;padding:9px 12px;margin-top:9px;font-size:11.5px;color:var(--texto2);line-height:1.5}
+.razon-burbuja b.nom{color:var(--texto);font-size:11px;display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.razon-burbuja b.nom .fase{margin-left:auto;font-weight:500;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--rojo);background:var(--rojodim);padding:1.5px 7px;border-radius:9px}
+.razon-burbuja .lin{white-space:pre-wrap}
+.razon-paso{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--texto2);padding:4px 0}
+.razon-paso .ok{color:var(--verde)}.razon-paso .sp{width:9px;height:9px;border:2px solid var(--borde);border-top-color:var(--rojo);border-radius:50%;animation:gr .7s linear infinite;flex-shrink:0}
+.modos{display:flex;gap:5px;flex-wrap:wrap;padding-bottom:2px}
+.mp{background:transparent;border:1px solid var(--borde);color:var(--texto2);font-size:11px;font-weight:600;padding:5px 11px;border-radius:16px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.mp svg{width:13px;height:13px}.mp.sel{background:var(--rojodim);border-color:var(--rojo);color:var(--rojo)}
+.inz{padding:12px 18px 16px}
+.inc{background:var(--panel);border:1px solid var(--borde);border-radius:15px;padding:11px;display:flex;flex-direction:column;gap:8px}
+.inc:focus-within{border-color:var(--rojo)}
+.inc textarea{background:transparent;border:none;outline:none;color:var(--texto);font-family:var(--fb);font-size:13.5px;resize:none;min-height:22px;max-height:160px;line-height:1.5}
+.inf{display:flex;justify-content:space-between;align-items:center}
+.pild{font-size:10.5px;color:var(--texto2);font-family:var(--fm)}.pild b{color:var(--rojo)}
+.btn-env{background:var(--rojo);border:none;width:34px;height:34px;border-radius:9px;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center}.btn-env:disabled{opacity:.3}
+.derecha{width:370px;min-width:370px;display:flex;flex-direction:column;background:linear-gradient(180deg,#131316,#0E0E11);border-left:1px solid var(--borde);animation:slideIn .3s cubic-bezier(.16,1,.3,1)}
+.derecha.oculto{display:none}
+.dt{display:flex;align-items:center;gap:6px;padding:11px 14px;border-bottom:1px solid var(--borde)}
+.dt-tab{background:transparent;border:1px solid var(--borde);color:var(--texto2);font-size:11.5px;font-weight:600;padding:6px 14px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.dt-tab.sel{background:var(--rojodim);border-color:var(--rojo);color:var(--rojo)}
+.cerrar-p{background:transparent;border:none;color:var(--texto2);font-size:20px;cursor:pointer;line-height:1;padding:0 6px}
+.cerrar-p:hover{color:var(--rojo)}
+.ctx-blk{background:var(--panel2);border:1px solid var(--borde);border-radius:var(--r);padding:13px;margin-bottom:11px}
+.ctx-h{font-size:10.5px;text-transform:uppercase;letter-spacing:1.5px;color:var(--texto2);display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.ctx-h svg{color:var(--rojo);width:14px;height:14px}
+.ctx-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:12px;color:var(--texto)}
+.ctx-item .ep{width:6px;height:6px;border-radius:50%;background:var(--verde);flex-shrink:0;box-shadow:0 0 6px var(--verde)}
+.ctx-item .ep.off{background:var(--borde);box-shadow:none}
+.ctx-item .nom{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ctx-item .det{font-size:10.5px;color:var(--texto2);font-family:var(--fm)}
+.ctx-vacio{font-size:11.5px;color:var(--texto2);text-align:center;padding:8px;font-style:italic}
+.hist-item{background:var(--panel2);border:1px solid var(--borde);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer}
+.hist-item:hover{border-color:var(--rojo)}
+.hist-item .ttl{font-size:12.5px;color:var(--texto);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-item .met{font-size:10.5px;color:var(--texto2);font-family:var(--fm)}
+.panel-lat{width:440px;min-width:440px;display:none;flex-direction:column;background:linear-gradient(180deg,#131316 0%,#0E0E11 100%);border-left:1px solid var(--borde);box-shadow:-12px 0 32px rgba(0,0,0,.45);position:relative;overflow:hidden}
+.panel-lat.visible{display:flex;animation:slideIn .35s cubic-bezier(.16,1,.3,1)}
+@keyframes slideIn{from{transform:translateX(60px);opacity:0}to{transform:translateX(0);opacity:1}}
+.panel-lat::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%;background:linear-gradient(180deg,transparent,var(--rojo),transparent);opacity:.5}
+.pl-zona.zona-3d{perspective:1100px;perspective-origin:50% 40%}
+.pl-zona.zona-3d svg{transform:rotateX(26deg);transform-style:preserve-3d;animation:flotar3d 9s ease-in-out infinite}
+@keyframes flotar3d{0%,100%{transform:rotateX(26deg) rotateZ(-2deg)}50%{transform:rotateX(22deg) rotateZ(2deg)}}
+.sinapsis{stroke-dasharray:6 8;animation:flujoSin 1.6s linear infinite}
+@keyframes flujoSin{to{stroke-dashoffset:-28}}
+.nodo-consulta circle{transition:all .25s cubic-bezier(.16,1,.3,1)}
+.nodo-consulta:hover circle{stroke-width:3;r:11;filter:drop-shadow(0 0 8px currentColor)}
+.nucleo-pulso{animation:nucleoPul 2.4s ease-in-out infinite}
+@keyframes nucleoPul{0%,100%{opacity:.25;r:40}50%{opacity:.05;r:52}}
+.pl-top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--borde)}
+.pl-titulo{font-family:var(--fd);font-size:17px;letter-spacing:2px;color:var(--rojo);display:flex;align-items:center;gap:8px}
+.pl-titulo .vivo{font-family:var(--fb);font-size:10px;color:var(--texto2);letter-spacing:1px;background:var(--panel3);padding:3px 9px;border-radius:10px;margin-left:4px}
+.pl-titulo .vivo.on{color:#fff;background:var(--rojo);animation:pul 1s infinite}
+.pl-zona{flex:1;display:flex;align-items:center;justify-content:center;padding:12px;overflow:hidden}
+.pl-zona svg{max-width:100%;max-height:100%}
+.pl-ley{display:flex;gap:10px;padding:10px 14px;border-top:1px solid var(--borde);font-size:10.5px;color:var(--texto2);flex-wrap:wrap;justify-content:center}
+.pl-ley span{display:flex;align-items:center;gap:5px}.pl-ley i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.petalo{transition:fill .4s,stroke .4s}.pulso{animation:pul 1s ease-in-out infinite}
+.deb{stroke:var(--rojo);stroke-width:1;stroke-dasharray:5 5;fill:none;opacity:.7;animation:flujo 1.2s linear infinite}
+@keyframes flujo{to{stroke-dashoffset:-20}}
+.flor-lbl{font-family:var(--fb);font-size:10px;fill:var(--texto2)}.flor-lbl.on{fill:var(--texto)}
+.nodo-consulta{cursor:pointer}.nodo-consulta:hover circle{stroke-width:2.5}
+.mf{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:100;padding:18px}.mf.visible{display:flex}
+.modal{background:var(--panel);border:1px solid var(--borde);border-radius:15px;padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:var(--fd);font-size:24px;letter-spacing:2px;margin-bottom:4px}.modal h3 span{color:var(--rojo)}
+.modal .sub{font-size:12px;color:var(--texto2);line-height:1.6;margin-bottom:14px}
+.modal input,.modal textarea,.modal select{width:100%;background:var(--negro);border:1px solid var(--borde);border-radius:8px;padding:10px;color:var(--texto);font-family:var(--fm);font-size:12px;outline:none;margin-bottom:10px}
+.modal textarea{font-family:var(--fb);min-height:140px;resize:vertical}
+.modal input:focus,.modal textarea:focus{border-color:var(--rojo)}
+.modal .bts{display:flex;gap:9px;justify-content:flex-end;margin-top:4px}
+.modal .bts button{padding:9px 20px;border-radius:9px;font-weight:600;font-size:12.5px;cursor:pointer}
+.b-c{background:transparent;color:var(--texto2);border:1px solid var(--borde)}
+.prov{background:var(--panel2);border:1px solid var(--borde);border-radius:var(--r);padding:12px;margin-bottom:10px}
+.prov .cab{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px}.prov .cab a{font-size:10.5px;color:var(--rojo);text-decoration:none}
+.roles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px}
+.rol label{font-size:9.5px;text-transform:uppercase;letter-spacing:1px;color:var(--texto2);display:block;margin-bottom:5px}
+.rol select{width:100%;background:var(--negro);border:1px solid var(--borde);color:var(--texto);border-radius:8px;padding:7px;font-size:11.5px;outline:none}
+@media(max-width:1100px){.derecha,.panel-lat{display:none!important}.sb{width:230px;min-width:230px}.roles{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<aside class="sb">
+  <div class="logo"><div class="mk" id="lg"></div><div><h1>APIAR<span>IA</span></h1><small>1200 agentes · Gemini</small></div></div>
+  <button class="btn-r" onclick="nuevaConsulta()"><span id="i-plus"></span>Nueva consulta</button>
+  <div class="ctrl">
+    <label>Tamaño del enjambre</label>
+    <select id="sel-n" onchange="actualizarNota()">
+      <option value="5">5 agentes · exploración</option>
+      <option value="15" selected>15 agentes · estándar</option>
+      <option value="30">30 agentes · profundo</option>
+      <option value="60">60 agentes · intensivo</option>
+      <option value="100">100 agentes · máximo</option>
+      <option value="120">120 agentes · ÁREA COMPLETA</option>
+    </select>
+    <div class="nota" id="nota-n"></div>
+  </div>
+  <div class="sec">Dominios <b id="t-tot"></b></div>
+  <div id="lista-dom"></div>
+  <div class="sec">Skills <button onclick="abrirSkill()">＋</button></div>
+  <div id="lista-skills"></div>
+  <div class="sec">Contexto <button onclick="abrirCtx()">＋</button></div>
+  <div id="lista-ctx"></div>
+  <div class="sec">Conectores <button onclick="abrirConector()">＋</button></div>
+  <div id="lista-con"></div>
+  <div class="sbf">
+    <button class="btn-g" onclick="abrirConfig()"><span id="i-gear"></span>Proveedores</button>
+    <div class="estado" id="estado-api"></div>
+  </div>
+</aside>
+
+<main class="centro" id="centro">
+  <div class="tab-floats">
+    <button class="tab-float activo" id="tf-ctx" onclick="toggleDerecha()"><span id="i-tf1"></span>Contexto</button>
+    <button class="tab-float" id="tf-flor" onclick="togglePanel('flor')"><span id="i-tf2"></span><span class="pv" id="pv-flor" style="display:none"></span>Colmena</button>
+    <button class="tab-float" id="tf-red" onclick="togglePanel('red')"><span id="i-tf3"></span>Red</button>
+  </div>
+  <div class="feed" id="feed">
+    <div class="feed-in" id="feed-in">
+      <div class="bienv" id="bienv">
+        <div class="mkg" id="lgg"></div>
+        <h2>APIAR<span>IA</span></h2>
+        <p><b style="color:var(--rojo)">1.200 agentes</b> en 10 dominios técnicos (120 por área): proponen en paralelo, <b style="color:var(--rojo)">debaten entre sí</b> y un sintetizador entrega la mejor solución con tabla comparativa. Tus consultas se tejen en una <b style="color:var(--rojo)">red neuronal</b> (botón Red).</p>
+        <div class="ejs" id="ejs"></div>
+      </div>
+    </div>
+  </div>
+  <div class="inz">
+    <div class="inc">
+      <div class="modos" id="modos"></div>
+      <textarea id="entrada" placeholder="Describe tu problema técnico..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();enviar()}"></textarea>
+      <div class="inf">
+        <div class="pild" id="pild">Modo: <b>solucionar</b></div>
+        <button class="btn-env" id="btn-env" onclick="enviar()"><span id="i-send"></span></button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<section class="derecha" id="derecha">
+  <div class="dt">
+    <button class="dt-tab sel" id="t-ctx" onclick="dTab('ctx')"><span id="i-ctxtab"></span>Contexto</button>
+    <button class="dt-tab" id="t-hist" onclick="dTab('hist')"><span id="i-hist"></span>Historial</button>
+    <button class="cerrar-p" style="margin-left:auto" onclick="toggleDerecha()">×</button>
+  </div>
+  <div id="ctx-vista" style="flex:1;overflow-y:auto;padding:16px">
+    <div class="ctx-blk"><div class="ctx-h"><span id="i-cb1"></span>Skills activas</div><div id="ctx-skills"></div></div>
+    <div class="ctx-blk"><div class="ctx-h"><span id="i-cb2"></span>Contexto de sesión</div><div id="ctx-archivos"></div></div>
+    <div class="ctx-blk"><div class="ctx-h"><span id="i-cb3"></span>Conectores</div><div id="ctx-conects"></div></div>
+    <div class="ctx-blk"><div class="ctx-h"><span id="i-cb4"></span>Proveedores</div><div id="ctx-prov"></div></div>
+  </div>
+  <div id="hist-vista" style="display:none;flex:1;overflow-y:auto;padding:14px 16px"></div>
+</section>
+
+<aside class="panel-lat" id="panel-flor">
+  <div class="pl-top">
+    <div class="pl-titulo"><span id="i-pf"></span>Colmena <span class="vivo" id="flor-estado">en reposo</span></div>
+    <button class="cerrar-p" onclick="togglePanel('flor')">×</button>
+  </div>
+  <div class="pl-zona"><svg id="flor" width="100%" height="100%" viewBox="0 0 500 500" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="pl-ley">
+    <span><i style="background:#3A3A42"></i>reserva</span>
+    <span><i style="background:var(--rojo)"></i>trabajando</span>
+    <span><i style="background:var(--verde)"></i>completado</span>
+  </div>
+</aside>
+
+<aside class="panel-lat" id="panel-red">
+  <div class="pl-top">
+    <div class="pl-titulo"><span id="i-pr"></span>Red de solicitudes</div>
+    <button class="cerrar-p" onclick="togglePanel('red')">×</button>
+  </div>
+  <div class="pl-zona zona-3d"><svg id="red" width="100%" height="100%" viewBox="0 0 500 560" preserveAspectRatio="xMidYMid meet"></svg></div>
+  <div class="pl-ley">
+    <span><i style="background:var(--rojo)"></i>solucionar</span>
+    <span><i style="background:var(--verde)"></i>crear</span>
+    <span><i style="background:#FFB84A"></i>pensar</span>
+    <span><i style="background:#B084FF"></i>skill</span>
+  </div>
+</aside>
+
+<div class="mf" id="m-skill"><div class="modal">
+  <h3>NUEVA <span>SKILL</span></h3>
+  <p class="sub">Reglas que TODOS los agentes cumplirán mientras esté activa.</p>
+  <input id="sk-nombre" placeholder="Nombre · ej: Stack PAR Servicios">
+  <textarea id="sk-cont" placeholder="- Backend: GAS con ContentService&#10;- Frontend: GitHub Pages, un solo HTML&#10;- Patrón fetch text/plain para CORS"></textarea>
+  <div class="bts"><button class="b-c" onclick="cerrar('m-skill')">Cancelar</button><button class="btn-r" style="width:auto;padding:9px 20px" onclick="guardarSkill()">Guardar</button></div>
+</div></div>
+
+<div class="mf" id="m-ctx"><div class="modal">
+  <h3>AGREGAR <span>CONTEXTO</span></h3>
+  <p class="sub">Carga un archivo de un repo público de GitHub o pega texto.</p>
+  <input id="ctx-url" placeholder="https://raw.githubusercontent.com/usuario/repo/main/archivo.sql">
+  <button class="btn-g" style="margin-bottom:12px" onclick="cargarGitHub()">Cargar desde GitHub</button>
+  <input id="ctx-nombre" placeholder="Nombre del texto...">
+  <textarea id="ctx-texto" placeholder="Pega código, schemas, datos de referencia..."></textarea>
+  <div id="ctx-conector-zona" style="display:none">
+    <div class="sec" style="margin:6px 0 8px">Desde un conector</div>
+    <select id="ctx-con-sel"></select>
+    <button class="btn-g" style="margin-bottom:8px" onclick="listarConector()">Listar archivos</button>
+    <div id="ctx-con-lista"></div>
+  </div>
+  <div class="bts"><button class="b-c" onclick="cerrar('m-ctx')">Cancelar</button><button class="btn-r" style="width:auto;padding:9px 20px" onclick="guardarCtxTexto()">Agregar texto</button></div>
+</div></div>
+
+<div class="mf" id="m-con"><div class="modal">
+  <h3>NUEVO <span>CONECTOR</span></h3>
+  <p class="sub">Puente a tu Drive vía Apps Script (código en conector-drive.gs del ZIP). Pégalo en script.google.com, define tu clave, despliega como Web App.</p>
+  <input id="con-nombre" placeholder="Nombre · ej: Mi Drive">
+  <input id="con-url" placeholder="https://script.google.com/macros/s/.../exec">
+  <input id="con-clave" type="password" placeholder="Clave secreta (la misma del script)">
+  <div class="bts"><button class="b-c" onclick="cerrar('m-con')">Cancelar</button><button class="btn-r" style="width:auto;padding:9px 20px" onclick="guardarConector()">Guardar</button></div>
+</div></div>
+
+<div class="mf" id="m-conf"><div class="modal">
+  <h3>PROVEEDORES <span>DE IA</span></h3>
+  <p class="sub">Gemini es GRATIS (regulado automáticamente). Pega tu key y guarda: todos los roles ya vienen en Gemini.</p>
+  <div id="lista-prov"></div>
+  <div class="sec" style="margin:10px 0 8px">Roles</div>
+  <div class="roles">
+    <div class="rol"><label>Coordinador</label><select id="rol-coord"></select></div>
+    <div class="rol"><label>Enjambre y debate</label><select id="rol-enjambre"></select></div>
+    <div class="rol"><label>Sintetizador</label><select id="rol-sintesis"></select></div>
+  </div>
+  <div class="bts"><button class="b-c" onclick="cerrar('m-conf')">Cancelar</button><button class="btn-r" style="width:auto;padding:9px 20px" onclick="guardarConfig()">Guardar</button></div>
+</div></div>
+
+<script src="providers.js"></script>
+<script src="hive.js"></script>
+<script>
+/* ═══ ICONOS ═══ */
+const IC={
+hex:'<svg class="ic" viewBox="0 0 24 24"><path d="M12 2l8 4.6v9.2L12 22l-8-4.6V6.6z"/><circle cx="12" cy="12" r="3"/></svg>',
+plus:'<svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
+gear:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>',
+send:'<svg class="ic" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
+flor:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><ellipse cx="12" cy="5.5" rx="2.5" ry="3.5"/><ellipse cx="12" cy="18.5" rx="2.5" ry="3.5"/><ellipse cx="5.5" cy="12" rx="3.5" ry="2.5"/><ellipse cx="18.5" cy="12" rx="3.5" ry="2.5"/></svg>',
+hist:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+bulb:'<svg class="ic" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 014 10.5c-.8.7-1 1.5-1 2.5h-6c0-1-.2-1.8-1-2.5A6 6 0 0112 3z"/></svg>',
+target:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>',
+wrench:'<svg class="ic" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 00-5.6 4.9L3 17.3V21h3.7l5.9-5.9a4 4 0 004.9-5.6L14 13l-3-3z"/></svg>',
+cloud:'<svg class="ic" viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 010-9 6 6 0 0111.6 1.5A3.8 3.8 0 0118 18z"/></svg>',
+net:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="4" cy="6" r="2"/><circle cx="20" cy="6" r="2"/><circle cx="4" cy="18" r="2"/><circle cx="20" cy="18" r="2"/><path d="M5.8 7l4.2 3.5M18.2 7L14 10.5M5.8 17l4.2-3.5M18.2 17L14 13.5"/></svg>',
+doc:'<svg class="ic" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>',
+skill:'<svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>',
+db:'<svg class="ic" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>',
+py:'<svg class="ic" viewBox="0 0 24 24"><path d="M8 6l-5 6 5 6M16 6l5 6-5 6"/></svg>',
+pq:'<svg class="ic" viewBox="0 0 24 24"><path d="M3 8h13l-3-3M21 16H8l3 3"/></svg>',
+sheet:'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',
+xls:'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M3 9h18M13 13l4 4M17 13l-4 4"/></svg>',
+gas:'<svg class="ic" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg>',
+js:'<svg class="ic" viewBox="0 0 24 24"><path d="M8 4c-2 0-2 2-2 3v3c0 1-1 2-2 2 1 0 2 1 2 2v3c0 1 0 3 2 3M16 4c2 0 2 2 2 3v3c0 1 1 2 2 2-1 0-2 1-2 2v3c0 1 0 3-2 3"/></svg>',
+css:'<svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/></svg>',
+html:'<svg class="ic" viewBox="0 0 24 24"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5M13 4l-2 16"/></svg>',
+arch:'<svg class="ic" viewBox="0 0 24 24"><circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="12" cy="19" r="2.5"/><path d="M7 6.5l3.5 9M17 6.5l-3.5 9M7.5 5h9"/></svg>'
+};
+["lg","lgg"].forEach(id=>document.getElementById(id).innerHTML=IC.hex);
+[["i-plus","plus"],["i-gear","gear"],["i-send","send"],["i-hist","hist"],["i-ctxtab","doc"],["i-cb1","skill"],["i-cb2","doc"],["i-cb3","cloud"],["i-cb4","gear"],["i-tf1","doc"],["i-tf2","flor"],["i-tf3","net"],["i-pf","flor"],["i-pr","net"]].forEach(([a,b])=>{const el=document.getElementById(a);if(el)el.innerHTML=IC[b]||"";});
+
+/* ═══ ESTADO ═══ */
+let ocupado=false, dominioActivo=null;
+const cfg={get roles(){return JSON.parse(localStorage.getItem("apiaria_roles")||'{"coord":"gemini","enjambre":"gemini","sintesis":"gemini"}')},set roles(v){localStorage.setItem("apiaria_roles",JSON.stringify(v))}};
+document.getElementById("t-tot").textContent=TOTAL_AGENTES;
+
+/* ═══ MODOS ═══ */
+const MODOS=[
+  {id:"solucionar",n:"Solucionar",ic:"target",ph:"Describe el problema técnico..."},
+  {id:"crear",n:"Crear",ic:"plus",ph:"Describe el código que quieres que la colmena cree..."},
+  {id:"modificar",n:"Modificar",ic:"wrench",ph:"Pega el código actual y describe los cambios..."},
+  {id:"pensar",n:"Pensar",ic:"bulb",ph:"Cuéntame el reto y la colmena hará lluvia de ideas..."}
+];
+let modoActual="solucionar";
+function pintarModos(){document.getElementById("modos").innerHTML=MODOS.map(m=>`<button class="mp ${m.id===modoActual?'sel':''}" onclick="setModo('${m.id}')">${IC[m.ic]}${m.n}</button>`).join("")}
+function setModo(id){modoActual=id;pintarModos();const m=MODOS.find(x=>x.id===id);document.getElementById("entrada").placeholder=m.ph;document.getElementById("pild").innerHTML="Modo: <b>"+m.n.toLowerCase()+"</b>";}
+
+function pintarDominios(){
+  document.getElementById("lista-dom").innerHTML=Object.entries(DOMINIOS).map(([id,d])=>
+    `<div class="dom-item" id="dom-${id}">${IC[d.icono]}${d.n}<span class="cnt">${COLMENA[id].length}</span></div>`).join("");
+}
+function actualizarNota(){
+  const n=+document.getElementById("sel-n").value;
+  const prov=cfg.roles.enjambre;
+  const g=prov==="gemini";
+  document.getElementById("nota-n").innerHTML=g
+    ?`<b>${n}</b> propuestas + <b>${n}</b> debates + síntesis<br>Gemini gratis · Costo: <b style="color:var(--verde)">~$0</b> · Tiempo: ~${Math.ceil(n*2*4.2/60)} min`
+    :`<b>${n}</b> propuestas + <b>${n}</b> debates + síntesis<br>Costo aprox: <b>~$${(n*0.005*2+0.04).toFixed(2)} USD</b>`;
+}
+const EJEMPLOS=[
+  ["db","Consulta SQL: top 10 vendedores por ventas del trimestre con ranking acumulado"],
+  ["py","Script Python que consolide 30 Excel de una carpeta en un parquet"],
+  ["pq","En Power Query, merge entre ventas y catálogo sin duplicar filas"],
+  ["sheet","Fórmula QUERY para sumar ventas por mes y vendedor"],
+  ["xls","Medida DAX: % acumulado del mes vs meta"],
+  ["gas","doPost en Apps Script sin error de CORS desde GitHub Pages"]
+];
+
+/* ═══ SKILLS / CTX / CONECTORES ═══ */
+function skills(){return JSON.parse(localStorage.getItem("apiaria_skills")||"[]")}
+function ctxs(){return JSON.parse(sessionStorage.getItem("apiaria_ctx")||"[]")}
+function conectores(){return JSON.parse(localStorage.getItem("apiaria_conectores")||"[]")}
+function pintarSkills(){
+  const s=skills();
+  document.getElementById("lista-skills").innerHTML=s.length
+    ?s.map(x=>`<div class="item"><span class="toggle ${x.activa?'on':''}" onclick="toggleSkill('${x.id}')"><i></i></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.nombre)}</span><span class="x" onclick="borrarSkill('${x.id}')">×</span></div>`).join("")
+    :'<div style="font-size:11px;color:var(--texto2);padding:2px 6px">Sin skills</div>';
+  pintarContextoVista();
+}
+function pintarCtx(){
+  const c=ctxs();
+  document.getElementById("lista-ctx").innerHTML=c.length
+    ?c.map((x,i)=>`<span class="chip">${esc(x.nombre.slice(0,18))}<span class="x" onclick="borrarCtx(${i})">×</span></span>`).join("")
+    :'<div style="font-size:11px;color:var(--texto2);padding:2px 6px">Sin contexto</div>';
+  pintarContextoVista();
+}
+function pintarConectores(){
+  const c=conectores();
+  document.getElementById("lista-con").innerHTML=c.length
+    ?c.map(x=>`<div class="item">${IC.cloud}<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.nombre)}</span><span class="x" onclick="borrarConector('${x.id}')">×</span></div>`).join("")
+    :'<div style="font-size:11px;color:var(--texto2);padding:2px 6px">Sin conectores</div>';
+  pintarContextoVista();
+}
+function abrirSkill(){document.getElementById("m-skill").classList.add("visible")}
+function guardarSkill(){
+  const n=document.getElementById("sk-nombre").value.trim(),c=document.getElementById("sk-cont").value.trim();
+  if(!n||!c)return;
+  const s=skills();s.unshift({id:"s"+Date.now(),nombre:n,contenido:c,activa:true});
+  localStorage.setItem("apiaria_skills",JSON.stringify(s));
+  document.getElementById("sk-nombre").value="";document.getElementById("sk-cont").value="";
+  cerrar("m-skill");pintarSkills();
+}
+function toggleSkill(id){const s=skills();const x=s.find(y=>y.id===id);if(x)x.activa=!x.activa;localStorage.setItem("apiaria_skills",JSON.stringify(s));pintarSkills();}
+function borrarSkill(id){localStorage.setItem("apiaria_skills",JSON.stringify(skills().filter(x=>x.id!==id)));pintarSkills();}
+function abrirCtx(){
+  const c=conectores(),z=document.getElementById("ctx-conector-zona");
+  if(c.length){z.style.display="block";document.getElementById("ctx-con-sel").innerHTML=c.map(x=>`<option>${esc(x.nombre)}</option>`).join("");document.getElementById("ctx-con-lista").innerHTML="";}
+  else z.style.display="none";
+  document.getElementById("m-ctx").classList.add("visible");
+}
+async function cargarGitHub(){
+  let u=document.getElementById("ctx-url").value.trim();if(!u)return;
+  u=u.replace("github.com","raw.githubusercontent.com").replace("/blob/","/");
+  try{const r=await fetch(u);if(!r.ok)throw new Error("HTTP "+r.status);
+    const t=await r.text();const c=ctxs();c.push({nombre:u.split("/").pop(),contenido:t});
+    sessionStorage.setItem("apiaria_ctx",JSON.stringify(c));
+    document.getElementById("ctx-url").value="";cerrar("m-ctx");pintarCtx();
+  }catch(e){alert("No se pudo cargar: "+e.message);}
+}
+function guardarCtxTexto(){
+  const n=document.getElementById("ctx-nombre").value.trim()||"referencia",t=document.getElementById("ctx-texto").value.trim();if(!t)return;
+  const c=ctxs();c.push({nombre:n,contenido:t});sessionStorage.setItem("apiaria_ctx",JSON.stringify(c));
+  document.getElementById("ctx-nombre").value="";document.getElementById("ctx-texto").value="";cerrar("m-ctx");pintarCtx();
+}
+function borrarCtx(i){const c=ctxs();c.splice(i,1);sessionStorage.setItem("apiaria_ctx",JSON.stringify(c));pintarCtx();}
+function abrirConector(){document.getElementById("m-con").classList.add("visible")}
+function guardarConector(){
+  const n=document.getElementById("con-nombre").value.trim(),u=document.getElementById("con-url").value.trim(),k=document.getElementById("con-clave").value.trim();
+  if(!n||!u){alert("Nombre y URL obligatorios");return;}
+  const c=conectores();c.push({id:"c"+Date.now(),nombre:n,url:u,clave:k});
+  localStorage.setItem("apiaria_conectores",JSON.stringify(c));
+  ["con-nombre","con-url","con-clave"].forEach(i=>document.getElementById(i).value="");
+  cerrar("m-con");pintarConectores();
+}
+function borrarConector(id){localStorage.setItem("apiaria_conectores",JSON.stringify(conectores().filter(x=>x.id!==id)));pintarConectores();}
+async function llamarConector(con,payload){
+  const r=await fetch(con.url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({clave:con.clave,...payload})});
+  const d=await r.json();if(!d.ok)throw new Error(d.error||"Error del conector");return d;
+}
+async function listarConector(){
+  const c=conectores(),sel=document.getElementById("ctx-con-sel"),con=c[sel.selectedIndex];if(!con)return;
+  const z=document.getElementById("ctx-con-lista");z.innerHTML='<div style="font-size:11px;color:var(--texto2)">Consultando...</div>';
+  try{const d=await llamarConector(con,{accion:"listar"});
+    z.innerHTML=(d.archivos||[]).slice(0,30).map(f=>`<div class="item" onclick="leerConector('${con.id}','${f.id}','${esc(f.nombre).replace(/'/g,"")}')">${IC.html}${esc(f.nombre)}</div>`).join("")||"<div style='font-size:11px;color:var(--texto2)'>Carpeta vacía</div>";
+  }catch(e){z.innerHTML=`<div style="font-size:11px;color:var(--rojo)">${esc(e.message)}</div>`;}
+}
+async function leerConector(conId,fileId,nombre){
+  const con=conectores().find(x=>x.id===conId);if(!con)return;
+  try{const d=await llamarConector(con,{accion:"leer",id:fileId});
+    const c=ctxs();c.push({nombre,contenido:d.contenido});sessionStorage.setItem("apiaria_ctx",JSON.stringify(c));
+    cerrar("m-ctx");pintarCtx();msgSys(`Archivo <b>«${esc(nombre)}»</b> cargado como contexto.`);
+  }catch(e){alert("Error: "+e.message);}
+}
+function construirContextoSkills(){
+  const sk=skills().filter(s=>s.activa);const ct=ctxs();let b="";
+  if(sk.length)b+="SKILLS ACTIVAS (cumple obligatoriamente):\n"+sk.map(s=>`── ${s.nombre} ──\n${s.contenido}`).join("\n\n")+"\n";
+  if(ct.length)b+="\nCONTEXTO DEL PROYECTO:\n"+ct.map(c=>`── ${c.nombre} ──\n${c.contenido.slice(0,6000)}`).join("\n\n")+"\n";
+  return b;
+}
+
+/* ═══ CONFIG ═══ */
+function abrirConfig(){
+  document.getElementById("lista-prov").innerHTML=Object.entries(PROVEEDORES).map(([id,p])=>`
+    <div class="prov"><div class="cab"><b>${p.nombre}${id==="gemini"?' <span style="color:var(--verde);font-size:10px">GRATIS</span>':''}</b><a href="${p.urlKeys}" target="_blank">obtener key ↗</a></div>
+    <input type="password" id="key-${id}" placeholder="${p.prefijo}..." value="${getProviderKey(id)}"></div>`).join("");
+  const ops=Object.entries(PROVEEDORES).map(([id,p])=>`<option value="${id}">${p.nombre}</option>`).join("");
+  ["rol-coord","rol-enjambre","rol-sintesis"].forEach(id=>document.getElementById(id).innerHTML=ops);
+  const r=cfg.roles;document.getElementById("rol-coord").value=r.coord;document.getElementById("rol-enjambre").value=r.enjambre;document.getElementById("rol-sintesis").value=r.sintesis;
+  document.getElementById("m-conf").classList.add("visible");
+}
+function guardarConfig(){
+  Object.keys(PROVEEDORES).forEach(id=>setProviderKey(id,document.getElementById("key-"+id).value));
+  cfg.roles={coord:document.getElementById("rol-coord").value,enjambre:document.getElementById("rol-enjambre").value,sintesis:document.getElementById("rol-sintesis").value};
+  estadoApi();actualizarNota();pintarContextoVista();cerrar("m-conf");
+}
+function estadoApi(){
+  const a=Object.keys(PROVEEDORES).filter(p=>getProviderKey(p));
+  const e=document.getElementById("estado-api");
+  e.textContent=a.length?"Conectado: "+a.map(p=>PROVEEDORES[p].nombre.split(" ")[0]).join(" · "):"Sin proveedores — pega tu key de Gemini";
+  e.className="estado"+(a.length?" ok":"");
+}
+function cerrar(id){document.getElementById(id).classList.remove("visible")}
+
+/* ═══ PANELES PLEGABLES ═══ */
+function toggleDerecha(){
+  const d=document.getElementById("derecha"),b=document.getElementById("tf-ctx");
+  const abrir=d.classList.contains("oculto");
+  if(abrir && window.innerWidth<1650){
+    ["flor","red"].forEach(o=>{
+      document.getElementById("panel-"+o).classList.remove("visible");
+      document.getElementById("tf-"+o).classList.remove("activo");
+    });
+  }
+  d.classList.toggle("oculto");b.classList.toggle("activo",!d.classList.contains("oculto"));
+}
+function togglePanel(cual){
+  const p=document.getElementById("panel-"+cual),b=document.getElementById("tf-"+cual);
+  const abrir=!p.classList.contains("visible");
+  // Exclusivo: cerrar el otro panel lateral para que jamás se monten
+  ["flor","red"].forEach(o=>{
+    if(o!==cual){
+      document.getElementById("panel-"+o).classList.remove("visible");
+      document.getElementById("tf-"+o).classList.remove("activo");
+    }
+  });
+  p.classList.toggle("visible",abrir);
+  b.classList.toggle("activo",abrir);
+  // En pantallas medianas, ceder el espacio del panel de contexto
+  if(abrir && window.innerWidth<1650){
+    document.getElementById("derecha").classList.add("oculto");
+    document.getElementById("tf-ctx").classList.remove("activo");
+  }
+  if(cual==="red"&&abrir)construirRed();
+}
+function abrirFlor(){const p=document.getElementById("panel-flor");if(!p.classList.contains("visible"))togglePanel("flor");}
+function setEstadoColmena(estado){
+  const e=document.getElementById("flor-estado"),pv=document.getElementById("pv-flor");
+  if(estado==="trabajando"){e.textContent="en vivo";e.classList.add("on");pv.style.display="inline-block";pv.classList.add("on");}
+  else if(estado==="listo"){e.textContent="finalizado";e.classList.remove("on");pv.classList.remove("on");pv.style.display="inline-block";}
+  else{e.textContent="en reposo";e.classList.remove("on");pv.style.display="none";}
+}
+
+/* ═══ FLOR ═══ */
+const FCX=250,FCY=250;const dots={};
+const ICO_FLOR={
+  db:'<path d="M4 5c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5" fill="none" stroke-width="1.5"/>',
+  py:'<path d="M8 6l-5 6 5 6M16 6l5 6-5 6" fill="none" stroke-width="1.8"/>',
+  pq:'<path d="M3 8h13l-3-3M21 16H8l3 3" fill="none" stroke-width="1.8"/>',
+  sheet:'<path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18" fill="none" stroke-width="1.5"/>',
+  xls:'<path d="M3 3h18v18H3zM9 3v18M3 9h18M13 13l4 4M17 13l-4 4" fill="none" stroke-width="1.5"/>',
+  gas:'<path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" fill="none" stroke-width="1.5"/>',
+  js:'<path d="M8 4c-2 0-2 2-2 3v3c0 1-1 2-2 2 1 0 2 1 2 2v3c0 1 0 3 2 3M16 4c2 0 2 2 2 3v3c0 1 1 2 2 2-1 0-2 1-2 2v3c0 1 0 3-2 3" fill="none" stroke-width="1.5"/>',
+  css:'<path d="M3 3h13v13H3zM8 8h13v13H8z" fill="none" stroke-width="1.5"/>',
+  html:'<path d="M9 7l-5 5 5 5M15 7l5 5-5 5M13 4l-2 16" fill="none" stroke-width="1.5"/>',
+  arch:'<circle cx="5" cy="5" r="2.5" fill="none" stroke-width="1.5"/><circle cx="19" cy="5" r="2.5" fill="none" stroke-width="1.5"/><circle cx="12" cy="19" r="2.5" fill="none" stroke-width="1.5"/><path d="M7 6.5l3.5 9M17 6.5l-3.5 9M7.5 5h9" fill="none" stroke-width="1.5"/>'
+};
+function construirFlor(){
+  const svg=document.getElementById("flor");if(!svg)return;
+  const doms=Object.entries(DOMINIOS);
+  const R_INT=72,R_EXT=210,R_LBL=232;
+  let s=`<defs><filter id="glowF" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`;
+  doms.forEach(([id,d],i)=>{
+    const ang=(i/doms.length)*Math.PI*2-Math.PI/2;
+    const angDeg=ang*180/Math.PI;
+    const cx=FCX+Math.cos(ang)*((R_INT+R_EXT)/2), cy=FCY+Math.sin(ang)*((R_INT+R_EXT)/2);
+    const lx=FCX+Math.cos(ang)*R_LBL, ly=FCY+Math.sin(ang)*R_LBL;
+    const ix=FCX+Math.cos(ang)*(R_EXT-32), iy=FCY+Math.sin(ang)*(R_EXT-32);
+    const rx=(R_EXT-R_INT)/2, ry=28;
+    s+=`<g><ellipse id="petalo-${id}" class="petalo" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${rx}" ry="${ry}" transform="rotate(${angDeg.toFixed(1)} ${cx.toFixed(1)} ${cy.toFixed(1)})" fill="#15151A" stroke="#2A2A30" stroke-width="1.4"/>
+      <g id="dots-${id}" opacity="0.3"></g>
+      <svg id="ic-${id}" x="${(ix-9).toFixed(1)}" y="${(iy-9).toFixed(1)}" width="18" height="18" viewBox="0 0 24 24" overflow="visible"><g stroke="#5A5A66" stroke-linecap="round" stroke-linejoin="round">${ICO_FLOR[d.icono]||ICO_FLOR.arch}</g></svg>
+      <text id="lbl-${id}" class="flor-lbl" x="${lx.toFixed(1)}" y="${(ly+3).toFixed(1)}" text-anchor="middle">${d.n.split(" ")[0].toUpperCase()}</text></g>`;
+    for(let j=0;j<10;j++){
+      const t=0.3+(j/9)*0.6, dist=R_INT+(R_EXT-R_INT)*t;
+      const dx=FCX+Math.cos(ang)*dist, dy=FCY+Math.sin(ang)*dist;
+      const lat=((j%2)*2-1)*3.5;
+      dots[`${id}_${j}`]={x:dx+Math.cos(ang+Math.PI/2)*lat, y:dy+Math.sin(ang+Math.PI/2)*lat};
+    }
+    let pts="";for(let j=0;j<10;j++){const k=`${id}_${j}`;pts+=`<circle id="dot-${k}" cx="${dots[k].x.toFixed(1)}" cy="${dots[k].y.toFixed(1)}" r="2.2" fill="#3A3A42"/>`;}
+    s=s.replace(`<g id="dots-${id}" opacity="0.3"></g>`,`<g id="dots-${id}" opacity="0.3">${pts}</g>`);
+  });
+  s+=`<g id="flor-deb"></g>`;
+  s+=`<circle cx="${FCX}" cy="${FCY}" r="48" fill="#E11D2E"/><circle cx="${FCX}" cy="${FCY}" r="48" fill="none" stroke="#fff" stroke-width="1" opacity="0.15"/>
+      <text x="${FCX}" y="${FCY-2}" text-anchor="middle" fill="#fff" font-size="16" font-family="Bebas Neue" letter-spacing="2">NÚCLEO</text>
+      <text x="${FCX}" y="${FCY+14}" text-anchor="middle" fill="#fff" font-size="9" font-family="Barlow" opacity="0.85">1200 agentes</text>`;
+  svg.innerHTML=s;
+}
+function petalo(id,estado){
+  const p=document.getElementById("petalo-"+id);if(!p)return;
+  const lbl=document.getElementById("lbl-"+id),icSvg=document.getElementById("ic-"+id),dotsG=document.getElementById("dots-"+id);
+  const ico=c=>{if(icSvg){const g=icSvg.querySelector("g");if(g)g.setAttribute("stroke",c);}};
+  if(estado==="trabajo"){p.setAttribute("fill","rgba(225,29,46,.18)");p.setAttribute("stroke","#E11D2E");p.setAttribute("stroke-width","2");p.setAttribute("filter","url(#glowF)");p.classList.add("pulso");lbl?.classList.add("on");ico("#E11D2E");dotsG?.setAttribute("opacity","1");}
+  else if(estado==="listo"){p.setAttribute("fill","rgba(46,213,115,.10)");p.setAttribute("stroke","#2ED573");p.setAttribute("stroke-width","1.5");p.setAttribute("filter","url(#glowF)");p.classList.remove("pulso");lbl?.classList.add("on");ico("#2ED573");dotsG?.setAttribute("opacity","1");}
+  else{p.setAttribute("fill","#15151A");p.setAttribute("stroke","#2A2A30");p.setAttribute("stroke-width","1.4");p.removeAttribute("filter");p.classList.remove("pulso");lbl?.classList.remove("on");ico("#5A5A66");dotsG?.setAttribute("opacity","0.3");}
+}
+function dotEstado(agId,estado){
+  const k=agId.split("_").slice(0,2).join("_");
+  const d=document.getElementById("dot-"+k);if(!d)return;
+  d.setAttribute("fill",{reserva:"#3A3A42",trabajo:"#E11D2E",listo:"#2ED573"}[estado]);
+  d.setAttribute("r",estado==="trabajo"?3.4:2.2);
+}
+function florDebate(domId,ids){
+  const g=document.getElementById("flor-deb");if(!g)return;
+  if(!ids||!ids.length){g.innerHTML="";return;}
+  const ks=ids.map(id=>id.split("_").slice(0,2).join("_")).filter(k=>dots[k]);
+  let s="";
+  for(let i=0;i<ks.length;i++)for(let j=i+1;j<Math.min(i+3,ks.length);j++){
+    const a=dots[ks[i]],b=dots[ks[j]];
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2,cx=mx+(FCX-mx)*0.15,cy=my+(FCY-my)*0.15;
+    s+=`<path class="deb" d="M${a.x.toFixed(1)} ${a.y.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}"/>`;
+  }
+  g.innerHTML=s;
+}
+function florReset(){
+  Object.keys(DOMINIOS).forEach(id=>{petalo(id,"reserva");document.getElementById("dom-"+id)?.classList.remove("on");});
+  Object.keys(dots).forEach(k=>{const d=document.getElementById("dot-"+k);if(d){d.setAttribute("fill","#3A3A42");d.setAttribute("r",2.2);}});
+  florDebate(null);
+}
+
+/* ═══ RED NEURONAL DE SOLICITUDES ═══ */
+function construirRed(){
+  const svg=document.getElementById("red");if(!svg)return;
+  const h=historial().slice(0,30);
+  const CX=250,CY=300;
+  const colModo={solucionar:"#E11D2E",crear:"#2ED573",pensar:"#FFB84A",modificar:"#4A9EFF"};
+  const doms=Object.keys(DOMINIOS);
+  const porDom={};h.forEach(x=>{const d=(x.meta&&x.meta.dom)||"arq";(porDom[d]||=[]).push(x);});
+  let s=`<defs>
+    <filter id="glowR" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <radialGradient id="gNuc"><stop offset="0%" stop-color="#FF4757"/><stop offset="100%" stop-color="#B01020"/></radialGradient>
+    <radialGradient id="gFondo" cx="50%" cy="45%"><stop offset="0%" stop-color="#1A0D10" stop-opacity=".9"/><stop offset="100%" stop-color="#0A0A0B" stop-opacity="0"/></radialGradient>
+  </defs>`;
+  // halo de fondo con profundidad
+  s+=`<ellipse cx="${CX}" cy="${CY}" rx="235" ry="215" fill="url(#gFondo)"/>`;
+  // anillos orbitales decorativos (dan sensación de profundidad)
+  [110,165,211,257].forEach((r,i)=>{
+    s+=`<ellipse cx="${CX}" cy="${CY}" rx="${r}" ry="${r*0.92}" fill="none" stroke="#2A2A30" stroke-width="0.6" opacity="${0.5-i*0.1}" stroke-dasharray="${i?'2 6':'none'}"/>`;
+  });
+  // aristas núcleo→dominios (sinapsis animadas si tienen consultas)
+  doms.forEach((id,i)=>{
+    const ang=(i/doms.length)*Math.PI*2-Math.PI/2;
+    const dx=CX+Math.cos(ang)*110, dy=CY+Math.sin(ang)*110*0.92;
+    const tiene=(porDom[id]||[]).length>0;
+    s+= tiene
+      ? `<line class="sinapsis" x1="${CX}" y1="${CY}" x2="${dx.toFixed(1)}" y2="${dy.toFixed(1)}" stroke="#E11D2E" stroke-width="1.1" opacity="0.55"/>`
+      : `<line x1="${CX}" y1="${CY}" x2="${dx.toFixed(1)}" y2="${dy.toFixed(1)}" stroke="#22222A" stroke-width="1"/>`;
+  });
+  // consultas por dominio
+  const posConsulta={};
+  doms.forEach((id,i)=>{
+    const ang=(i/doms.length)*Math.PI*2-Math.PI/2;
+    const dx=CX+Math.cos(ang)*110, dy=CY+Math.sin(ang)*110*0.92;
+    (porDom[id]||[]).forEach((q,j)=>{
+      const ring=Math.floor(j/4), pos=j%4;
+      const a2=ang+(pos/3-0.5)*1.1;
+      const r2=165+ring*46;
+      const qx=CX+Math.cos(a2)*r2, qy=CY+Math.sin(a2)*r2*0.92;
+      posConsulta[q.id]={x:qx,y:qy};
+      s+=`<line class="sinapsis" x1="${dx.toFixed(1)}" y1="${dy.toFixed(1)}" x2="${qx.toFixed(1)}" y2="${qy.toFixed(1)}" stroke="#3A3A42" stroke-width="0.9" opacity="0.6"/>`;
+    });
+  });
+  // skills → aristas violetas
+  const skillPos={};const skAct=[...new Set(h.flatMap(x=>(x.meta&&x.meta.skills)||[]))].slice(0,5);
+  skAct.forEach((nombre,i)=>{
+    const sx=70+i*90, sy=36;
+    skillPos[nombre]={x:sx,y:sy};
+    h.forEach(q=>{
+      if(((q.meta&&q.meta.skills)||[]).includes(nombre)&&posConsulta[q.id]){
+        const p=posConsulta[q.id];
+        s+=`<line class="sinapsis" x1="${sx}" y1="${sy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="#B084FF" stroke-width="0.8" opacity="0.3"/>`;
+      }
+    });
+  });
+  // nodos dominio (con glow si activos)
+  doms.forEach((id,i)=>{
+    const ang=(i/doms.length)*Math.PI*2-Math.PI/2;
+    const dx=CX+Math.cos(ang)*110, dy=CY+Math.sin(ang)*110*0.92;
+    const n=(porDom[id]||[]).length;
+    s+=`<circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="${n?15:9}" fill="#15151A" stroke="${n?'#E11D2E':'#2A2A30'}" stroke-width="1.4" ${n?'filter="url(#glowR)"':''}/>
+        <text x="${dx.toFixed(1)}" y="${(dy+3).toFixed(1)}" text-anchor="middle" font-size="8" fill="${n?'#EDEDEF':'#5A5A66'}" font-family="Barlow" font-weight="600">${DOMINIOS[id].n.split(" ")[0].slice(0,5).toUpperCase()}</text>`;
+  });
+  // nodos consulta con glow del color de su modo
+  h.forEach(q=>{
+    const p=posConsulta[q.id];if(!p)return;
+    const col=colModo[(q.meta&&q.meta.modo)||"solucionar"]||"#E11D2E";
+    s+=`<g class="nodo-consulta" onclick="cargarHist('${q.id}')" style="color:${col}">
+      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="8" fill="${col}26" stroke="${col}" stroke-width="1.6" filter="url(#glowR)"><title>${esc(q.pregunta.slice(0,90))}</title></circle>
+      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" fill="${col}"/>
+    </g>`;
+  });
+  // nodos skill
+  skAct.forEach(nombre=>{
+    const p=skillPos[nombre];
+    s+=`<rect x="${p.x-34}" y="${p.y-11}" width="68" height="22" rx="7" fill="#B084FF1C" stroke="#B084FF" stroke-width="1" filter="url(#glowR)"/>
+        <text x="${p.x}" y="${p.y+3.5}" text-anchor="middle" font-size="8" fill="#B084FF" font-family="Barlow" font-weight="600">${esc(nombre.slice(0,12))}</text>`;
+  });
+  // núcleo con halo pulsante
+  s+=`<circle class="nucleo-pulso" cx="${CX}" cy="${CY}" r="44" fill="none" stroke="#E11D2E" stroke-width="1.5"/>
+      <circle cx="${CX}" cy="${CY}" r="34" fill="url(#gNuc)" filter="url(#glowR)"/>
+      <text x="${CX}" y="${CY+1}" text-anchor="middle" fill="#fff" font-size="12" font-family="Bebas Neue" letter-spacing="2">TÚ</text>
+      <text x="${CX}" y="${CY+13}" text-anchor="middle" fill="#fff" font-size="7.5" font-family="Barlow" opacity="0.85">${h.length} consultas</text>`;
+  if(!h.length) s+=`<text x="${CX}" y="${CY+82}" text-anchor="middle" font-size="11" fill="#8B8B93" font-family="Barlow" font-style="italic">Tus consultas aparecerán aquí como nodos conectados</text>`;
+  svg.innerHTML=s;
+}
+
+/* ═══ CONTEXTO VISTA ═══ */
+function pintarContextoVista(){
+  const el=document.getElementById("ctx-skills");if(!el)return;
+  const sk=skills();
+  el.innerHTML=sk.length?sk.map(s=>`<div class="ctx-item"><span class="ep ${s.activa?'':'off'}"></span><span class="nom">${esc(s.nombre)}</span><span class="det">${s.activa?'activa':'pausada'}</span></div>`).join(""):'<div class="ctx-vacio">Sin skills</div>';
+  const ct=ctxs();
+  document.getElementById("ctx-archivos").innerHTML=ct.length?ct.map(c=>`<div class="ctx-item"><span class="ep"></span><span class="nom">${esc(c.nombre)}</span><span class="det">${Math.round((c.contenido||"").length/100)/10}k</span></div>`).join(""):'<div class="ctx-vacio">Sin archivos en esta sesión</div>';
+  const co=conectores();
+  document.getElementById("ctx-conects").innerHTML=co.length?co.map(c=>`<div class="ctx-item"><span class="ep"></span><span class="nom">${esc(c.nombre)}</span><span class="det">Drive</span></div>`).join(""):'<div class="ctx-vacio">Sin conectores</div>';
+  document.getElementById("ctx-prov").innerHTML=Object.entries(PROVEEDORES).map(([id,p])=>{
+    const ok=!!getProviderKey(id);
+    return `<div class="ctx-item"><span class="ep ${ok?'':'off'}"></span><span class="nom">${p.nombre}</span><span class="det">${ok?'conectado':'sin key'}</span></div>`;
+  }).join("");
+}
+function dTab(t){
+  document.getElementById("t-ctx").classList.toggle("sel",t==="ctx");
+  document.getElementById("t-hist").classList.toggle("sel",t==="hist");
+  document.getElementById("ctx-vista").style.display=t==="ctx"?"block":"none";
+  document.getElementById("hist-vista").style.display=t==="hist"?"block":"none";
+  if(t==="hist")pintarHistorial();if(t==="ctx")pintarContextoVista();
+}
+
+/* ═══ HISTORIAL ═══ */
+function historial(){return JSON.parse(localStorage.getItem("apiaria_hist")||"[]")}
+function guardarEnHist(pregunta,respuesta,meta){
+  const h=historial();h.unshift({id:"h"+Date.now(),fecha:Date.now(),pregunta,respuesta,meta});
+  localStorage.setItem("apiaria_hist",JSON.stringify(h.slice(0,40)));
+  if(document.getElementById("panel-red").classList.contains("visible"))construirRed();
+}
+function pintarHistorial(){
+  const h=historial(),v=document.getElementById("hist-vista");
+  v.innerHTML=h.length
+    ?h.map(x=>{const m=x.meta||{};const d=m.dom?DOMINIOS[m.dom]?.n:"";return `<div class="hist-item" onclick="cargarHist('${x.id}')"><div class="ttl">${esc(x.pregunta.slice(0,80))}</div><div class="met">${new Date(x.fecha).toLocaleString()} · ${d} · ${m.n||''} ag · ${m.modo||''}</div></div>`}).join("")
+    :'<div style="font-size:12px;color:var(--texto2);text-align:center;margin-top:30px">Tus consultas se guardarán aquí</div>';
+}
+function cargarHist(id){
+  const x=historial().find(h=>h.id===id);if(!x)return;
+  document.getElementById("bienv")?.remove();
+  msgUser(x.pregunta);msgSys(marked.parse(x.respuesta));
+}
+
+/* ═══ FEED ═══ */
+const feedIn=document.getElementById("feed-in");
+function quitarBienv(){document.getElementById("bienv")?.remove();}
+function msgUser(t){quitarBienv();feedIn.insertAdjacentHTML("beforeend",`<div class="msg user"><div class="av">TÚ</div><div class="ct">${esc(t)}</div></div>`);scrollFeed();}
+function msgSys(html){quitarBienv();const d=document.createElement("div");d.className="msg sys";d.innerHTML=`<div class="av">${IC.hex}</div><div class="ct">${html}</div>`;feedIn.appendChild(d);scrollFeed();return d.querySelector(".ct");}
+function scrollFeed(){const f=document.getElementById("feed");f.scrollTop=f.scrollHeight;}
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+function parseConf(t){const m=t.match(/CONFIANZA:\s*([0-9.]+)/i);return m?parseFloat(m[1]):0.5;}
+
+/* ═══ MOTOR ═══ */
+let contadorRazon=0;
+async function enviar(){
+  const ta=document.getElementById("entrada"),pedido=ta.value.trim();
+  if(!pedido||ocupado)return;
+  const roles=cfg.roles;
+  if(!getProviderKey(roles.coord)||!getProviderKey(roles.enjambre)||!getProviderKey(roles.sintesis)){abrirConfig();return;}
+  ocupado=true;document.getElementById("btn-env").disabled=true;
+  ta.value="";ta.style.height="auto";florReset();setEstadoColmena("trabajando");
+  msgUser(pedido);
+  const rid="rz"+(++contadorRazon);
+  const respMsg=document.createElement("div");
+  respMsg.className="msg sys";
+  respMsg.innerHTML=`<div class="av">${IC.hex}</div><div class="ct">
+    <div class="proceso-mini" id="${rid}-prog"><div class="sp"></div><span id="${rid}-txt">Iniciando colmena...</span>
+      <button onclick="abrirFlor()" style="margin-left:auto;background:transparent;border:1px solid var(--borde);color:var(--rojo);font-size:10.5px;padding:3px 9px;border-radius:6px;cursor:pointer;font-family:var(--fb)">ver colmena en vivo</button></div>
+    <div class="razon-box" style="display:none" id="${rid}-box">
+      <button class="razon-trigger" onclick="toggleRazon('${rid}')"><span id="${rid}-fl">▶</span> Ver razonamiento de la colmena <span class="meta" id="${rid}-meta"></span></button>
+      <div class="razon-contenido" id="${rid}-cont"></div>
+    </div>
+    <div id="${rid}-final"></div>
+  </div>`;
+  feedIn.appendChild(respMsg);document.getElementById("bienv")?.remove();scrollFeed();
+  const razon=document.getElementById(rid+"-cont");
+  const setProg=t=>{const e=document.getElementById(rid+"-txt");if(e)e.innerHTML=t;};
+  const addPaso=(t,fin=false)=>razon.insertAdjacentHTML("beforeend",`<div class="razon-paso">${fin?'<span class="ok">✓</span>':'<span class="sp"></span>'} ${t}</div>`);
+  const finPaso=()=>{const p=razon.querySelectorAll(".razon-paso .sp");if(p.length)p[p.length-1].outerHTML='<span class="ok">✓</span>';};
+  const addBurbuja=(nombre,fase,texto)=>razon.insertAdjacentHTML("beforeend",`<div class="razon-burbuja"><b class="nom">${esc(nombre)}<span class="fase">${fase}</span></b><div class="lin">${esc(texto)}</div></div>`);
+
+  try{
+    const skillsCtx=construirContextoSkills();
+    setProg("Núcleo clasificando el problema...");addPaso("Núcleo coordinador clasificando");
+    const raw=await llamarIA(roles.coord,COORDINADOR_SYSTEM,pedido,300);
+    let cl;try{cl=JSON.parse(raw.replace(/```json|```/g,"").trim());}catch{cl={dominio:"arq",complejidad:"moderada"};}
+    if(!COLMENA[cl.dominio])cl.dominio="arq";
+    dominioActivo=cl.dominio;
+    document.getElementById("dom-"+cl.dominio).classList.add("on");petalo(cl.dominio,"trabajo");
+    finPaso();addPaso(`Dominio: <b style="color:var(--rojo)">${DOMINIOS[cl.dominio].n}</b> · ${cl.complejidad}`,true);
+
+    const N=+document.getElementById("sel-n").value;
+    const escuadron=seleccionarEscuadron(cl.dominio,N);
+
+    setProg(`Ronda 1: 0 / ${N} propuestas...`);addPaso(`Ronda 1 · ${N} agentes proponiendo en paralelo`);
+    escuadron.forEach(a=>dotEstado(a.id,"trabajo"));
+    let h1=0;
+    const props=await poolParalelo(escuadron.map(a=>async()=>{
+      const t=await llamarIA(roles.enjambre,modoActual==="pensar"?promptIdea(a,skillsCtx):promptPropuesta(a,skillsCtx),pedido,420);
+      dotEstado(a.id,"listo");h1++;setProg(`Ronda 1: ${h1} / ${N} propuestas...`);
+      return {ag:a,texto:t,conf:parseConf(t)};
+    }),5);
+    finPaso();
+    const propsOk=props.filter(x=>x&&!x.error);
+    propsOk.sort((a,b)=>b.conf-a.conf).slice(0,5).forEach(p=>addBurbuja(p.ag.nombreCorto,"propuesta",p.texto.slice(0,500)+(p.texto.length>500?"…":"")));
+
+    setProg(`Ronda 2: debate entre ${propsOk.length} agentes...`);addPaso(`Ronda 2 · debate cruzado entre los ${propsOk.length} agentes`);
+    florDebate(cl.dominio,propsOk.map(x=>x.ag.id));
+    propsOk.forEach(x=>dotEstado(x.ag.id,"trabajo"));
+    const muro=propsOk.slice(0,8).map(x=>`[${x.ag.nombreCorto}]:\n${x.texto.slice(0,280)}`).join("\n\n");
+    let h2=0;
+    const debates=await poolParalelo(propsOk.map(x=>async()=>{
+      const t=await llamarIA(roles.enjambre,promptDebate(x.ag,skillsCtx),`PROBLEMA:\n${pedido}\n\nPROPUESTAS DE TUS COLEGAS:\n${muro}`,300);
+      dotEstado(x.ag.id,"listo");h2++;setProg(`Ronda 2: ${h2} / ${propsOk.length} debates...`);
+      return {ag:x.ag,texto:t};
+    }),5);
+    finPaso();florDebate(cl.dominio,null);
+    const debatesOk=debates.filter(x=>x&&!x.error);
+    debatesOk.slice(0,4).forEach(d=>addBurbuja(d.ag.nombreCorto,"debate",d.texto.slice(0,400)+(d.texto.length>400?"…":"")));
+
+    setProg(`Sintetizador fusionando ${propsOk.length} soluciones...`);addPaso("Sintetizador fusionando + tabla comparativa");
+    const topProps=propsOk.slice(0,8).map(x=>`═══ [${x.ag.nombreCorto}] (conf ${x.conf}) ═══\n${x.texto}`).join("\n\n");
+    const topDeb=debatesOk.slice(0,8).map(x=>`[${x.ag.nombreCorto}]: ${x.texto.slice(0,300)}`).join("\n\n");
+    const sys=modoActual==="pensar"?ESTRATEGA_SYSTEM:SINTETIZADOR_SYSTEM;
+    const final=await llamarIA(roles.sintesis,sys+"\n"+skillsCtx,
+      `PROBLEMA:\n${pedido}\n\nPROPUESTAS:\n${topProps}\n\nDEBATE:\n${topDeb}`,6500,PROVEEDORES[roles.sintesis].modeloSintesis);
+    finPaso();petalo(cl.dominio,"listo");
+
+    document.getElementById(rid+"-prog").remove();
+    document.getElementById(rid+"-box").style.display="block";
+    document.getElementById(rid+"-meta").textContent=`${DOMINIOS[cl.dominio].n} · ${N} agentes`;
+    const rf=document.getElementById(rid+"-final");
+    rf.innerHTML=marked.parse(final);
+    rf.querySelectorAll("pre").forEach(pre=>pre.insertAdjacentHTML("afterbegin",'<button class="btn-cp" onclick="cp(this)">copiar</button>'));
+    scrollFeed();
+    guardarEnHist(pedido,final,{dom:cl.dominio,n:N,modo:modoActual,skills:skills().filter(s=>s.activa).map(s=>s.nombre)});
+    setEstadoColmena("listo");
+  }catch(e){
+    const pm=document.getElementById(rid+"-prog");
+    if(pm)pm.outerHTML=`<p style="color:var(--rojo)"><b>Error:</b> ${esc(e.message)}</p>`;
+    setEstadoColmena("listo");
+  }finally{
+    ocupado=false;document.getElementById("btn-env").disabled=false;
+  }
+}
+function toggleRazon(rid){
+  const c=document.getElementById(rid+"-cont"),f=document.getElementById(rid+"-fl");
+  const ab=c.classList.toggle("abierto");f.textContent=ab?"▼":"▶";
+}
+function cp(b){navigator.clipboard.writeText(b.parentElement.querySelector("code").innerText);b.textContent="✓";setTimeout(()=>b.textContent="copiar",1500);}
+function nuevaConsulta(){location.reload();}
+function usarEj(b){document.getElementById("entrada").value=b.querySelector("i").textContent.trim();enviar();}
+document.getElementById("entrada").addEventListener("input",function(){this.style.height="auto";this.style.height=Math.min(this.scrollHeight,160)+"px";});
+
+/* INIT */
+pintarModos();pintarDominios();pintarSkills();pintarCtx();pintarConectores();construirFlor();construirRed();estadoApi();actualizarNota();setModo("solucionar");pintarContextoVista();
+document.getElementById("ejs").innerHTML=EJEMPLOS.map(([ic,t])=>`<button class="ej" onclick="usarEj(this)">${IC[ic]}<i style="font-style:normal">${t}</i></button>`).join("");
+</script>
+</body>
+</html>

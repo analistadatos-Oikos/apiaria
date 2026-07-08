@@ -1,0 +1,126 @@
+═══════════════════════════════════════════════════════════════
+  ApiarIA FULL · 1.200 AGENTES + RED NEURONAL DE SOLICITUDES
+  Instructivo de despliegue en GitHub (10 minutos)
+═══════════════════════════════════════════════════════════════
+
+QUÉ CONTIENE EL ZIP (4 archivos para subir):
+  index.html          → la aplicación completa
+  hive.js             → los 1.200 agentes (120 por área × 10 dominios)
+  providers.js        → conexión Gemini/Claude/Perplexity
+  conector-drive.gs   → OPCIONAL: puente a tu Drive (no se sube si no lo usas,
+                        pero súbelo igual, no estorba)
+
+═══ PASO 1 · CREAR EL REPOSITORIO ═══
+1. Entra a https://github.com (crea cuenta gratis si no tienes).
+2. Botón verde "New" (o el + arriba a la derecha → New repository).
+3. Repository name: apiaria   (o el nombre que quieras, sin espacios)
+4. Marca "Public".
+5. Botón "Create repository".
+
+═══ PASO 2 · SUBIR LOS ARCHIVOS ═══
+1. En la página del repo nuevo: link "uploading an existing file"
+   (o Add file → Upload files).
+2. ARRASTRA los 4 archivos del ZIP (descomprímelo primero en tu PC).
+3. Botón verde "Commit changes".
+
+═══ PASO 3 · ACTIVAR GITHUB PAGES ═══
+1. En el repo: pestaña "Settings" (arriba).
+2. Menú izquierdo: "Pages".
+3. En "Branch": elige "main" y carpeta "/ (root)" → "Save".
+4. Espera 1-2 minutos. Tu app queda en:
+   https://TU-USUARIO.github.io/apiaria/
+   (GitHub te muestra el link exacto en esa misma página de Pages)
+
+═══ PASO 4 · LA API KEY DE GEMINI (GRATIS) ═══
+1. Entra a https://aistudio.google.com/apikey con tu cuenta Google.
+2. Botón "Create API key" → copia la llave (empieza por AIza...).
+3. Abre tu app → botón "Proveedores" (abajo izquierda).
+4. Pega la key en el campo de Gemini → "Guardar".
+   Los 3 roles (coordinador, enjambre, sintetizador) YA vienen
+   configurados en Gemini. No toques nada más.
+5. La key se guarda SOLO en tu navegador; nunca la subas al repo.
+
+═══ PASO 5 · USAR ═══
+- Escribe tu problema técnico y Enter. El núcleo clasifica el
+  dominio (SQL, Python, M, Sheets, Excel, GAS, JS, CSS, HTML,
+  Arquitectura), despliega el escuadrón, los agentes PROPONEN en
+  paralelo, luego DEBATEN entre sí, y el sintetizador entrega la
+  solución con TABLA COMPARATIVA de enfoques.
+- Modos (píldoras sobre el texto): Solucionar / Crear /
+  Modificar / Pensar.
+- Enjambre: de 5 a 120 agentes (120 = área completa).
+
+TIEMPOS con Gemini gratis (regulado a ~15 llamadas/min):
+  15 agentes ≈ 4-5 min (2 rondas + síntesis)
+  30 agentes ≈ 9 min · 60 ≈ 17 min · 120 ≈ 34 min
+  El regulador y la cascada de modelos son automáticos: si Gemini
+  devuelve "cuota" o 429, la app espera y reintenta sola.
+
+═══ LAS 3 VENTANAS (botones arriba a la derecha) ═══
+· CONTEXTO  → qué sabe la colmena ahora: skills activas, archivos
+  de sesión, conectores y proveedores. También pestaña Historial.
+· COLMENA   → la flor en vivo: pétalos = dominios; se encienden
+  en rojo al trabajar, verde al terminar; líneas rojas = agentes
+  debatiendo entre sí. Badge "en vivo" mientras procesa.
+· RED       → RED NEURONAL DE TUS SOLICITUDES: el nodo central
+  eres TÚ, conectado a los dominios, y cada consulta que haces
+  es un nodo de color según el modo (rojo solucionar, verde
+  crear, ámbar pensar, azul modificar). Las skills usadas
+  aparecen arriba en violeta conectadas a las consultas donde
+  participaron. CLIC en cualquier nodo = recarga esa consulta
+  al chat. Pasa el mouse por un nodo para ver la pregunta.
+
+═══ SKILLS Y CONTEXTO ═══
+- Skills (＋): reglas permanentes que TODOS los agentes cumplen
+  (tu stack, convenciones, prohibiciones). Se activan/desactivan.
+- Contexto (＋): pega texto o carga archivos raw de GitHub para
+  que el enjambre trabaje sobre TU código real.
+
+═══ CONECTOR DRIVE (OPCIONAL) ═══
+1. Abre conector-drive.gs → cópialo en script.google.com
+   (Nuevo proyecto).
+2. Cambia CLAVE por una contraseña tuya.
+3. Implementar → Nueva implementación → Aplicación web →
+   Ejecutar como: YO → Acceso: CUALQUIER PERSONA → Implementar.
+4. Copia la URL que termina en /exec.
+5. En la app: Conectores ＋ → nombre + URL + tu clave.
+Con eso puedes listar y leer archivos de tu Drive (texto, Docs,
+Sheets) como contexto de cualquier consulta.
+
+═══ PROBLEMAS FRECUENTES ═══
+- "Gemini: ... limit: 0" → tu key no tiene ese modelo; la app
+  cambia sola al siguiente de la cascada. Si pasa con todos,
+  crea la key en https://aistudio.google.com/apikey (no en GCP).
+- Error 429 → cuota por minuto agotada; la app espera y reintenta.
+- Cambios no se ven tras actualizar el repo → Ctrl+F5.
+- La página no carga → revisa Settings → Pages esté en main /root.
+═══════════════════════════════════════════════════════════════
+
+═══ ACTUALIZACIÓN v3 · GROQ + CEREBRAS + FAILOVER ═══
+Ahora hay 5 proveedores y la app ALTERNA SOLA: si uno se tuesta
+(cuota agotada, error o no responde en 60 segundos) salta
+automáticamente al siguiente que tenga key. Orden de respaldo:
+Groq → Cerebras → Gemini → Claude → Perplexity.
+
+CÓMO OBTENER CADA API KEY (todas gratis, sin tarjeta):
+
+· GROQ (el más rápido — Llama 70B a 300 tokens/seg):
+  1. https://console.groq.com → entra con Google o GitHub
+  2. Menú "API Keys" → "Create API Key" → copia (empieza gsk_)
+  Límites gratis: 30 req/min · 1.000 req/día · ~100K tokens/día
+
+· CEREBRAS (el de más volumen — 1M tokens/día):
+  1. https://cloud.cerebras.ai → regístrate con tu correo
+  2. Sección "API Keys" → crear → copia (empieza csk-)
+  Límites gratis: 30 req/min · 1M tokens/día
+  Nota: su catálogo de modelos cambia seguido; la app trae
+  cascada automática de 4 modelos.
+
+· GEMINI: https://aistudio.google.com/apikey (empieza AIza)
+
+Pega las que tengas en el botón "Proveedores". Recomendado:
+  Coordinador → Groq · Enjambre → Groq · Sintetizador → Gemini
+Con Groq el enjambre corre al DOBLE de velocidad que Gemini
+(30 vs 15 req/min) y con un modelo más potente (Llama 70B).
+Si Groq agota su día, la app pasa sola a Cerebras y luego a
+Gemini sin que hagas nada.
